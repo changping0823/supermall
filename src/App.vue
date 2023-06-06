@@ -1,5 +1,5 @@
 <template>
-	<div>vue学习项目</div>
+	<div id="app">vue学习项目</div>
 </template>
 
 <script>
@@ -9,4 +9,6 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+@import "assets/css/base.css";
+</style>
