@@ -7,27 +7,7 @@
 		<recommend-view :recommends="recommends"></recommend-view>
 		<feature-view />
 		<tab-controller class="tab-controller" :titles="['流行', '精选', '新款']"></tab-controller>
-		<ul>
-			<li>asdadasdsdasadasd</li>
-			<li>asdadasdsdasadasd</li>
-			<li>asdadasdsdasadasd</li>
-			<li>asdadasdsdasadasd</li>
-			<li>asdadasdsdasadasd</li>
-			<li>asdadasdsdasadasd</li>
-			<li>asdadasdsdasadasd</li>
-			<li>asdadasdsdasadasd</li>
-			<li>asdadasdsdasadasd</li>
-			<li>asdadasdsdasadasd</li>
-			<li>asdadasdsdasadasd</li>
-			<li>asdadasdsdasadasd</li>
-			<li>asdadasdsdasadasd</li>
-			<li>asdadasdsdasadasd</li>
-			<li>asdadasdsdasadasd</li>
-			<li>asdadasdsdasadasd</li>
-			<li>asdadasdsdasadasd</li>
-			<li>asdadasdsdasadasd</li>
-			<li>asdadasdsdasadasd</li>
-		</ul>
+		<goods-list :goods="goods['pop'].list"></goods-list>
 	</div>
 </template>
 
@@ -38,8 +18,9 @@ import TabController from "@/components/content/tabcontroller/TabController.vue"
 import HomeSwiper from "./childComponents/HomeSwiper.vue";
 import RecommendView from "./childComponents/RecommendView.vue";
 import FeatureView from "./childComponents/FeatureView.vue";
+import GoodsList from "@/components/content/goods/GoodsList.vue";
 
-import { getHomeMultidata } from "network/home";
+import { getHomeMultidata, getHomeData } from "network/home";
 export default {
 	name: "Home",
 	components: {
@@ -47,21 +28,41 @@ export default {
 		TabController,
 		HomeSwiper,
 		RecommendView,
-		FeatureView
+		FeatureView,
+		GoodsList
 	},
 	data() {
 		return {
 			recommends: [],
-			banners: []
+			banners: [],
+			goods: {
+				pop: { page: 0, list: [] },
+				new: { page: 0, list: [] },
+				sell: { page: 0, list: [] }
+			}
 		};
 	},
-	methods: {},
 	created() {
 		document.title = "首页";
-		getHomeMultidata().then(res => {
-			this.banners = res.data.banner.list;
-			this.recommends = res.data.recommend.list;
-		});
+		this.getHomeMultidata();
+		this.getHomeData("pop");
+		this.getHomeData("new");
+		this.getHomeData("sell");
+	},
+	methods: {
+		getHomeMultidata() {
+			getHomeMultidata().then(res => {
+				this.banners = res.data.banner.list;
+				this.recommends = res.data.recommend.list;
+			});
+		},
+		getHomeData(type) {
+			const page = this.goods[type].page + 1;
+			getHomeData(type, page).then(res => {
+				this.goods[type].list.push(...res.data.list);
+				this.goods[type].page = page;
+			});
+		}
 	}
 };
 </script>
@@ -82,6 +83,7 @@ export default {
 .tab-controller {
 	position: sticky;
 	top: 44px;
+	z-index: 101;
 }
 
 li {
