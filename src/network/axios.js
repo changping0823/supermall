@@ -5,7 +5,7 @@ import qs from "qs";
 export default function axios(option) {
 	return new Promise((resolve, reject) => {
 		const instance = originAxios.create({
-			baseURL: "http://123.207.32.32:8000",
+			baseURL: "http://http://123.207.32.32:7888/api/hy66",
 			timeout: 5000
 		});
 
