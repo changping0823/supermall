@@ -1,5 +1,7 @@
 <template>
-	<div class="category">分类</div>
+	<div class="category">
+		<h2>分类</h2>
+	</div>
 </template>
 
 <script>
@@ -8,6 +10,13 @@ export default {
 	components: {},
 	created() {
 		document.title = "分类";
+		console.log("分类页面");
 	}
 };
 </script>
+
+<style>
+div {
+	background-color: aqua;
+}
+</style>
