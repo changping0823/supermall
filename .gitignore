@@ -1,8 +1,7 @@
 .DS_Store
 node_modules
 /dist
-#忽略跟踪(提交代码时，忽略某一个文件不提交，即某个文件不被版本控制)
-git update-index --assume-unchanged src/network/axios.js   #FILE是目标文件路径    
+ 
 # local env files
 .env.local
 .env.*.local
