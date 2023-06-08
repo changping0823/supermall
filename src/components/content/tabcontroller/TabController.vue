@@ -5,7 +5,7 @@
 			:key="index"
 			class="tab-controller-item"
 			:class="{ active: currentIndex === index }"
-			@click="currentIndex = index"
+			@click="tabControllerClick(index)"
 		>
 			<span>{{ item }}</span>
 		</div>
@@ -27,6 +27,12 @@ export default {
 		return {
 			currentIndex: 0
 		};
+	},
+	methods: {
+		tabControllerClick(index) {
+			this.currentIndex = index;
+			this.$emit("tabControllerClick", index);
+		}
 	}
 };
 </script>
