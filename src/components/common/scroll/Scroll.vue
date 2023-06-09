@@ -40,7 +40,9 @@ export default {
 		});
 
 		/// 监听上拉更多事件
+		// 3.监听上拉到底部
 		this.scroll.on("pullingUp", () => {
+			console.log("上拉加载");
 			this.$emit("pullingUp");
 		});
 	},
