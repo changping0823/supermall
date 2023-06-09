@@ -30,7 +30,9 @@ export default {
 		this.scroll = new BScroll(this.$refs.wrapper, {
 			click: true,
 			probeType: this.probeType,
-			pullUpLoad: this.pullUpLoad
+			pullUpLoad: this.pullUpLoad,
+			observeDOM: true,
+			observeImage: true
 		});
 		///监听滚动事件
 		this.scroll.on("scroll", position => {

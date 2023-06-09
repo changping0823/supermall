@@ -3,6 +3,13 @@
 		<nav-bar class="home-nav">
 			<div slot="center">购物街</div>
 		</nav-bar>
+		<tab-controller
+			class="tab-controller"
+			ref="tabControl1"
+			:titles="['流行', '精选', '新款']"
+			@tabControllerClick="tabControllerClick"
+			v-show="isTabFixed"
+		></tab-controller>
 		<scroll
 			class="content"
 			ref="scroll"
@@ -11,11 +18,12 @@
 			@pullingUp="pullingUp"
 			:pull-up-load="true"
 		>
-			<home-swiper :banners="banners"></home-swiper>
+			<home-swiper :banners="banners" @homeSwiperImageLoad="swiperImageLoad"></home-swiper>
 			<recommend-view :recommends="recommends"></recommend-view>
 			<feature-view />
 			<tab-controller
 				class="tab-controller"
+				ref="tabControl2"
 				:titles="['流行', '精选', '新款']"
 				@tabControllerClick="tabControllerClick"
 			></tab-controller>
@@ -26,7 +34,7 @@
 </template>
 
 <script>
-import NavBar from "common/navbar/BavBar.vue";
+import NavBar from "common/navbar/NavBar.vue";
 import TabController from "@/components/content/tabcontroller/TabController.vue";
 
 import Scroll from "common/scroll/Scroll.vue";
@@ -65,7 +73,9 @@ export default {
 				sell: { page: 0, list: [] }
 			},
 			currentType: "pop",
-			isShowBackTop: false
+			isShowBackTop: false,
+			isTabFixed: false,
+			tabOffsetTop: 0
 		};
 	},
 	created() {
@@ -76,11 +86,16 @@ export default {
 		this.getHomeData("sell");
 	},
 	methods: {
+		swiperImageLoad() {
+			this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
+		},
 		backTopClick() {
 			this.$refs.scroll.scrollTo(0, 0);
 		},
 		scrollPosition(position) {
 			this.isShowBackTop = -position.y > 1200;
+
+			this.isTabFixed = -position.y > this.tabOffsetTop;
 		},
 		pullingUp() {
 			this.getHomeData(this.currentType);
@@ -97,6 +112,9 @@ export default {
 					this.currentType = "sell";
 					break;
 			}
+			console.log(this.$refs.tabControl1.$el);
+			this.$refs.tabControl1.currentIndex = index;
+			this.$refs.tabControl2.currentIndex = index;
 		},
 		getHomeMultidata() {
 			getHomeMultidata().then(res => {
@@ -109,10 +127,12 @@ export default {
 			getHomeData(type, page).then(res => {
 				this.goods[type].list.push(...res.data.list);
 				this.goods[type].page = page;
-				this.$refs.scroll.scroll.refresh();
 				this.$refs.scroll.finishPullUp();
 			});
 		}
+	},
+	destroyed() {
+		console.log("destroyed");
 	}
 };
 </script>
@@ -120,17 +140,11 @@ export default {
 <style scoped>
 .home {
 	position: relative;
-	padding-top: 44px;
 	height: 100vh;
 }
 .home-nav {
 	background-color: var(--color-tint);
 	color: white;
-	position: fixed;
-	left: 0;
-	right: 0;
-	top: 0;
-	z-index: 100;
 }
 .content {
 	position: absolute;
