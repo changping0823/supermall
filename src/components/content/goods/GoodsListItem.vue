@@ -29,7 +29,9 @@ export default {
 	},
 	methods: {
 		goodsItemClick() {
-			this.$router.push("/detail/" + this.goodsItem.iid);
+			if (this.goodsItem.iid !== undefined) {
+				this.$router.push("/detail/" + this.goodsItem.iid);
+			}
 		}
 	}
 };

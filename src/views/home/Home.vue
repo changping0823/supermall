@@ -112,7 +112,7 @@ export default {
 					this.currentType = "sell";
 					break;
 			}
-			console.log(this.$refs.tabControl1.$el);
+			// console.log(this.$refs.tabControl1.$el);
 			this.$refs.tabControl1.currentIndex = index;
 			this.$refs.tabControl2.currentIndex = index;
 		},

@@ -7,7 +7,7 @@
 					class="title-item"
 					v-for="(item, index) in titles"
 					:key="index"
-					@click="navBarItemClick(index)"
+					@click="itemClick(index)"
 					:class="{ active: currentIndex === index }"
 				>
 					{{ item }}
@@ -25,18 +25,30 @@ export default {
 	components: {
 		NavBar
 	},
+	props: {
+		titles: {
+			type: Array,
+			default: () => {
+				return ["商品", "参数", "评论", "推荐"];
+			}
+		},
+		currentIndex: {
+			type: Number,
+			default: 0
+		}
+	},
 	data() {
 		return {
-			titles: ["商品", "参数", "评论", "推荐"],
-			currentIndex: 0
+			localIndex: this.currentIndex
 		};
 	},
 	methods: {
 		backClick() {
 			this.$router.back();
 		},
-		navBarItemClick(index) {
-			this.currentIndex = index;
+		itemClick(index) {
+			this.localIndex = index;
+			this.$emit("navBarItemClick", index);
 		}
 	}
 };
