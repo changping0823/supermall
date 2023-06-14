@@ -14,7 +14,8 @@
 			<detail-comment-info :comment-info="commentInfo" ref="comment"></detail-comment-info>
 			<goods-list :goods="recommends" ref="recommend"></goods-list>
 		</div>
-		<div class="detail-tool"></div>
+		<detail-bottom-bar class="bottom-bar" @addToCart="addToCart"></detail-bottom-bar>
+		<back-top @click.native="backTopClick" v-show="isShowBackTop"></back-top>
 	</div>
 </template>
 
@@ -28,8 +29,11 @@ import DetailGoodsInfo from "./childComponents/DetailGoodsInfo.vue";
 import DetailParamInfo from "./childComponents/DetailParamInfo.vue";
 import DetailCommentInfo from "./childComponents/DetailCommentInfo.vue";
 import GoodsList from "components/content/goods/GoodsList.vue";
+import DetailBottomBar from "./childComponents/DetailBottomBar.vue";
 
 import { getDetail, getRecommend, Goods, Shop, GoodsParam } from "network/detail.js";
+import { backTopMixin } from "@/common/mixin.js";
+import { BACKTOP_DISTANCE } from "@/common/const";
 
 export default {
 	name: "Detail",
@@ -41,8 +45,10 @@ export default {
 		DetailGoodsInfo,
 		DetailParamInfo,
 		DetailCommentInfo,
-		GoodsList
+		GoodsList,
+		DetailBottomBar
 	},
+	mixins: [backTopMixin],
 	data() {
 		return {
 			iid: null,
@@ -90,7 +96,9 @@ export default {
 			if (this.$refs.param == undefined) {
 				return;
 			}
-			let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+			let scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+			// 1.监听backTop的显示
+			this.isShowBackTop = scrollTop > BACKTOP_DISTANCE;
 
 			let param = this.$refs.param.$el;
 			let comment = this.$refs.comment.$el;
@@ -120,8 +128,19 @@ export default {
 			}
 			window.scrollTo({
 				top: tabOffsetTop,
-				behavior: "auto"
+				behavior: "smooth"
 			});
+		},
+		addToCart() {
+			const product = {};
+			// 2.对象信息
+			product.iid = this.iid;
+			product.imgURL = this.topImages[0];
+			product.title = this.goods.title;
+			product.desc = this.goods.desc;
+			product.newPrice = this.goods.nowPrice;
+			// this.$store.commit("addCart", product);
+			this.$store.dispatch("addCart", product);
 		}
 	},
 	mounted() {
@@ -151,13 +170,18 @@ export default {
 	margin-top: 44px;
 	margin-bottom: 49px;
 }
-.detail-tool {
+.bottom-bar {
 	position: fixed;
 	background-color: white;
 	bottom: 0;
 	left: 0;
 	width: 100%;
 	height: 49px;
-	z-index: 999; /* 设置一个较高的 z-index */
+	z-index: 998;
+}
+.back-top {
+	position: fixed;
+	right: 10px;
+	bottom: 65px;
 }
 </style>
